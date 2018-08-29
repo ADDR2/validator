@@ -85,9 +85,8 @@ class Validator {
     }
 
     validateRequires(object = {}, schema) {
-        const keys = Object.keys(schema);
-        for(const key of keys)
-            if(!(key in object) && schema[key].required)
+        for(const [ key, value ] of Object.entries(schema))
+            if(!(key in object) && value.required)
                 return false;
 
         return true;
@@ -101,12 +100,11 @@ class Validator {
             for( const key of keys ) {
                 if(key in schema) {
                     const keyRules = schema[key]
-                    const rules = Object.keys(keyRules);
                     
-                    for( const rule of rules )
+                    for(const [ rule, value ] of Object.entries(keyRules))
                         if(
                             rule in this &&
-                            !this[rule].call(this, subject[key], keyRules[rule])
+                            !this[rule].call(this, subject[key], value)
                         )
                             return false;
 
